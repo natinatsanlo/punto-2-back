@@ -1,0 +1,81 @@
+body{
+    margin:0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+*{
+    font-family: 'Gill Sans MT', Calibry, 'Trebuchet MS', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+}
+.inp{
+    display: none;
+}
+.progressBar{
+    width: 250px;
+    height: 50px;
+    position: relative;
+    background: rgb(207, 205, 205);
+}
+.filedata{
+    padding: 5px 10px;
+    color: white;
+    background: cornflowerblue;
+    display: none;
+}
+
+.progressBar{
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(45deg, red, blue);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    color: white;
+    align-items: center;
+}
+.img{
+    height: 150px;
+    width: 200px;
+    object-fit: fill;
+    margin: 5px;
+    display: none;
+}
+.images{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button{
+    padding: 15px 20px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.selectImage{
+    background: crimson;
+}
+.upload{
+    background: rgb(129, 88, 31);
+}
+.imageUpload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.loading{
+    display: none;
+    color: greenyellow;
+}
+
+
+

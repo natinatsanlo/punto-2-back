@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiple Image File Upload</title>
+    <link rel="stylesheet" href="./index.css" />
+    <!-- importing firebase scripts cdn -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+</head>
+<body>
+    <div class="imageUpload">
+        <input type="file" class="inp" onechange="getImageData(event)" multiple /> 
+        <button onclick="selectImage()" class="selectImage"> Select Images</button>
+        <span class="metaData"></span>
+        <div class="progressBar">
+            <div class="progress"></div>
+        </div>
+        <button class="upload" onclick="uploadImage()">Upload</button>
+        <span class="completeMsg"></span>
+        <span class="loading">Loading...</span>
+        <div class="images"></div>
+    </div>
+    <script>
+        //puesta en marcha firebase 
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIQA-9Ql__ry-wQfGK8l9FRYgOstzdGIE",
+            authDomain: "punto2-e.firebaseapp.com",
+            projectId: "punto2-e",
+            storageBucket: "punto2-e.appspot.com",
+            messagingSenderId: "1055166672523",
+            appId: "1:1055166672523:web:75280d3dd29817fd7d6e8e",
+            measurementId: "G-LS4B0HSFGK" //oeeee no esta en el video
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+
+        const inp = document.querySelector(".inp");
+        const progressBar = document.querySelector(".progress");
+        const img = document.querySelector(".img");
+        const images = document.querySelector(".images");
+        const body = document.querySelector("body");
+        const loading = document.querySelector(".loading");
+        const metaData = document.querySelector(".metaData");
+        const completeMsg = document.querySelector(".completeMsg");
+        let file;
+        let files;
+        let fileName;
+        let progress;
+        let uploadedFileName;
+
+        const getImageData= (e) => {
+            files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                let imageData = document.createElement("span");
+                imageData.className = 'filedata';
+                imageData.style.display='block';
+                imageData.innerHTML = files[i].name;
+                metaData.appendChild(imageData);
+            }
+        }; 
+        const selectImage= () => {
+            inp.click();
+        };
+
+        const uploadImage = async () => {
+            for (let i = 0; i < files.length; i++) {
+                let url = await uploadProcess(
+                    files[i],
+                    Math.round(Math.random()*9999)+files[i].name
+                ); // to generate unique file names
+                if (url) {
+                    loading.style.display='none';
+                    let image = document.createElement("img");
+                    image.style.display='block';
+                    image.setAttribute("src", url);
+                    image.className = "img";
+                    images.appendChild(image)
+                }
+                if(i===files.length-1){
+                    completeMsg.innerHTML = `${files.length} files uploaded successfully`;
+                }
+            }
+        };
+
+        const uploadProcess = (file,fileName) => {
+            return new Promise((resolve, reject) => {
+                const storageRef = storage.ref().child("myimages");
+                const folderRef = storage.ref().child("fileName");
+                const uploadTask = folderRef.put(file);
+
+                uploadTask.on(
+                    "state_changed",
+                    (snapshot) => {
+                    console.log(snapshot);
+                    loading.style.display = "block";
+                    progress = 
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    progress = Math.round(progress);
+                    progressBar.style.width = progress + "%";
+                    progressBar.innerHTML = progress + "%";
+                    uploadedFileName = snapshot.ref.name;
+                    },
+                    (error)=>{
+                        reject(error)
+                    },()=>{
+                    storage
+                        .ref('myimages')
+                        .child(uploadedFileName)
+                        .getDownloadURL()
+                        .then((url) => {
+                        console.log("URL", url);
+                        resolve(url);
+                    });
+                });
+            });
+        };
+        </script>
+    </body>
+</html>
